@@ -12,7 +12,7 @@ variable "local_ip" {
 variable "key_name" {
 }
 
-resource "aws_instance" "test-serv" {
+resource "aws_instance" "juphub-serv" {
     ami = "ami-05ed6813"
     instance_type = "t2.micro"
     vpc_security_group_ids = ["${aws_security_group.instance.id}"]
@@ -43,7 +43,7 @@ resource "aws_instance" "test-serv" {
     }
 
     tags {    
-        Name = "test-serv" 
+        Name = "juphub-serv" 
     }
 }
 
@@ -89,10 +89,10 @@ resource "aws_security_group" "instance" {
 }
 
 output "public_ip" {
-    value = "${aws_instance.test-serv.public_ip}"
+    value = "${aws_instance.juphub-serv.public_ip}"
 }
 
 output "private_ip" {
-    value = "${aws_instance.test-serv.private_ip}"
+    value = "${aws_instance.juphub-serv.private_ip}"
 }
 

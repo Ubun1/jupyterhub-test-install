@@ -12,7 +12,7 @@ pip3 install dockerspawner
 pip3 install netifaces
 
 #necesary config options
-cat << EOF > /home/ubuntu/jupyterhub_config.py
+cat << EOF > ./jupyterhub_config.py
 from IPython.utils.localinterfaces import public_ips
 import netifaces
 docker0 = netifaces.ifaddresses('docker0')
