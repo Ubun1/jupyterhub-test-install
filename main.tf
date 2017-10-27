@@ -7,14 +7,16 @@ variable "server_port" {
     default = 22
 }
 variable "local_ip" {
-    default = "109.252.45.3"
+}
+
+variable "key_name" {
 }
 
 resource "aws_instance" "test-serv" {
     ami = "ami-05ed6813"
     instance_type = "t2.micro"
     vpc_security_group_ids = ["${aws_security_group.instance.id}"]
-    key_name = "model"
+    key_name = "${var.key_name}"
 
     root_block_device  {
         volume_size = 15
@@ -60,7 +62,7 @@ resource "aws_security_group" "instance" {
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
-
+    # for juphub
     ingress {
         from_port = "8000"
         to_port = "8000"
