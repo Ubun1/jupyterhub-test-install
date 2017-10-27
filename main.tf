@@ -8,8 +8,14 @@ variable "server_port" {
 }
 variable "local_ip" {
 }
-
 variable "key_name" {
+}
+variable "fqdn" {
+}
+variable "subnet_id" {
+}
+data "aws_route53_zone" "personal" {
+  name         = "${var.fqdn}"
 }
 
 resource "aws_instance" "juphub-serv" {
@@ -34,7 +40,7 @@ resource "aws_instance" "juphub-serv" {
     provisioner "remote-exec" {
         inline = [
             "sudo chmod +x ./init.sh",
-            "sudo ./init.sh",
+            "sudo   ",
         ]
         connection {
         type     = "ssh"
@@ -86,6 +92,57 @@ resource "aws_security_group" "instance" {
     lifecycle {
         create_before_destroy = true
     }
+}
+
+resource "aws_security_group" "elb-sg" {
+    name = "elb-sg"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_elb" "elb" {
+  name    = "elb"
+  subnets = ["${var.subnet_id}"]
+
+  security_groups = ["${aws_security_group.elb-sg.id}"]
+
+  listener {
+    instance_port     = 8000
+    instance_protocol = "http"
+    lb_port           = 80
+    lb_protocol       = "http"
+  }
+
+  instances = ["${aws_instance.juphub-serv.id}"]
+
+  tags {
+    Name = "elb"
+  }
+}
+
+
+resource "aws_route53_record" "4-grade" {
+  zone_id = "${data.aws_route53_zone.personal.zone_id}"
+  name    = "juphub.${var.fqdn}"
+  type    = "A"
+  
+  alias {
+    name                   = "${aws_elb.elb.dns_name}"
+    zone_id                = "${aws_elb.elb.zone_id}"
+    evaluate_target_health = false
+  }
 }
 
 output "public_ip" {
