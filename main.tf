@@ -14,8 +14,15 @@ variable "fqdn" {
 }
 variable "subnet_id" {
 }
+variable "domain_cert" {
+}
 data "aws_route53_zone" "personal" {
   name         = "${var.fqdn}"
+}
+
+data "aws_acm_certificate" "cert" {
+  domain   = "${var.domain_cert}"
+  statuses = ["ISSUED"]
 }
 
 resource "aws_instance" "juphub-serv" {
@@ -40,7 +47,7 @@ resource "aws_instance" "juphub-serv" {
     provisioner "remote-exec" {
         inline = [
             "sudo chmod +x ./init.sh",
-            "sudo   ",
+            "sudo ./init.sh",
         ]
         connection {
         type     = "ssh"
@@ -121,8 +128,9 @@ resource "aws_elb" "elb" {
   listener {
     instance_port     = 8000
     instance_protocol = "http"
-    lb_port           = 80
-    lb_protocol       = "http"
+    lb_port           = 443
+    lb_protocol       = "https"
+    ssl_certificate_id = "${data.aws_acm_certificate.cert.arn}"
   }
 
   instances = ["${aws_instance.juphub-serv.id}"]
@@ -152,4 +160,3 @@ output "public_ip" {
 output "private_ip" {
     value = "${aws_instance.juphub-serv.private_ip}"
 }
-
