@@ -1,15 +1,15 @@
 version: "2"
 services:
-  jupyterhub:
+  jupyter:
     build: .
     ports:
       - "8000:8000"
     networks: 
-      - jupyterhub
+      - jupyter
   sinlegeuser:
     image: jupyterhub/singleuser
     networks: 
-      - jupyterhub
+      - jupyter
 networks:
-  jupyterhub:
+  jupyter:
     driver: bridge
