@@ -15,9 +15,9 @@ c.JupyterHub.cleanup_servers = False
 # First pulls can be really slow, so let's give it a big timeout
 c.SwarmSpawner.start_timeout = 60 * 5
 
-c.SwarmSpawner.jupyterhub_service_name = 'jupyterhub'
+c.SwarmSpawner.jupyterhub_service_name = 'hub_jupyter'
 
-c.SwarmSpawner.networks = ["jupyterhub"]
+c.SwarmSpawner.networks = ["hub_jupyter"]
 
 notebook_dir = os.environ.get('NOTEBOOK_DIR') or '/home/jovyan/work'
 c.SwarmSpawner.notebook_dir = notebook_dir
