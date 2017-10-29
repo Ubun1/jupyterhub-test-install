@@ -1,16 +1,6 @@
-FROM continuumio/miniconda3
-LABEL mainteiner="nikita@kretov.site"
+FROM jupyterhub/jupyterhub:latest
 
-RUN apt isntall nodejs-legacy npm
+RUN pip install swarmspawner
+ADD jupyterhub_config.py /srv/jupyterhub/jupyterhub_config.py
 
-RUN npm install -g configurable-http-proxy
-
-RUN /opt/conda/pip3 install jupyterhub \
-                IPython \
-                jupyter_client \
-                dockerspawner \
-                netifaces
-
-ADD jupyterhub_config.py jupyterhub_config.py
-EXPOSE 8000
-ENTRYPOINT [ "jupyterhub" ]
+CMD ["jupyterhub"]
