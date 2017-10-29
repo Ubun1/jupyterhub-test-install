@@ -1,0 +1,15 @@
+version: "3"
+services:
+  jupyterhub:
+    build: .
+    ports:
+      - "8000:8000"
+    networks: 
+      - jupyterhub
+  sinlegeuser:
+    image: jupyterhub/singleuser
+    networks: 
+      - jupyterhub
+networks:
+  jupyterhub:
+    driver: bridge

@@ -27,6 +27,7 @@ resource "aws_instance" "juphub-serv" {
 
     provisioner "remote-exec" {
         inline = [
+            "sudo apt install -y docker-compose",
             "sudo usermod -a -G docker ubuntu",
             "git clone https://github.com/Ubun1/jupyterhub-test-install.git",
         ]
